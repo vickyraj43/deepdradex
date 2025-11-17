@@ -8,7 +8,7 @@ export class OHLCAdaptor {
     constructor(
         private readonly yahooFinanceService: YahooFinanceOHLCStrategy
     ) {
-        this.strategies = [this.yahooFinanceService];
+        this.strategies = [this.yahooFinanceService ];
     }
 
     async getOHLC(symbol: string, periodFrom: string, periodTo?: string, limit?: string): Promise<any> {

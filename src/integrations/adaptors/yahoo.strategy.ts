@@ -18,18 +18,18 @@ type OHLCQuery = {
 }
 
 type OHLCResultType = {
-    date: string,
-    open: string,
-    high: string,
-    low: string,
-    close: string,
-    volume: string,
-    odjClose: string
+    date: string | Date,
+    open: number,
+    high: number,
+    low: number,
+    close: number,
+    volume: number,
+    adjClose: string | number | undefined
 }
 
 @Injectable()
 export class  YahooFinanceOHLCStrategy extends OHLCStrategy {
-    async fetchOHLCData(symbol: string, periodFrom: string, periodTo?: string, interval: string = Interval.ONE_DAY): Promise<any> {
+    async fetchOHLCData(symbol: string, periodFrom: string, periodTo?: string, interval?: string): Promise<any> {
         try {
             const yahooFinance = new YahooFinance();
             console.log('yahooFinance :: ', yahooFinance);
@@ -38,18 +38,18 @@ export class  YahooFinanceOHLCStrategy extends OHLCStrategy {
                 period2: periodTo || '2025-11-08', // to date
                 interval: this.validateInterval(interval),
             };
-
+            console.log('queryOptions :: ', queryOptions);
             const result = await yahooFinance.historical(symbol, queryOptions);
             console.log('result :: ', result);
             const resultFormated:OHLCResultType[] = result.map(candle => {
                 return {
-                    date: candle?.date + '',
-                    open: candle?.open + '',
-                    high: candle?.high + '',
-                    low: candle?.low + '',
-                    close: candle?.close + '',
-                    volume: candle?.volume + '',
-                    odjClose: candle?.adjClose + ''
+                    date: candle?.date ,
+                    open: candle?.open ,
+                    high: candle?.high ,
+                    low: candle?.low ,
+                    close: candle?.close ,
+                    volume: candle?.volume ,
+                    adjClose: candle?.adjClose 
                 }
             })
             console.log('resultFormated :: ', resultFormated);
@@ -59,7 +59,7 @@ export class  YahooFinanceOHLCStrategy extends OHLCStrategy {
         }
     }
 
-    private validateInterval(interval: string): ValidInterval {
+    private validateInterval(interval: string | undefined): ValidInterval {
         const validIntervals: ValidInterval[] = ['1d', '1wk', '1mo'];
         if (validIntervals.includes(interval as ValidInterval)) {
             return interval as ValidInterval;
